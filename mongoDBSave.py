@@ -17,8 +17,3 @@ df = pd.read_csv('C:/Users/YISOEUN/Downloads/Machine-Learning-Project-master/all
 
 catalog = df.columns #get columnns
 record = df.iloc #get record except columns
-
-
-doc = database.find({})
-print(type(doc))
-
