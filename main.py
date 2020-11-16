@@ -60,16 +60,68 @@ from sklearn.naive_bayes import GaussianNB
 
 # model
 # modle별 파라미터 정의 필요
-logistic = LogisticRegression().fit(classificaiton_X,classificaiton_y)
-kneighbors = KNeighborsClassifier().fit(classificaiton_X,classificaiton_y)
-decisionTree = DecisionTreeClassifier().fit(classificaiton_X,classificaiton_y)
-randomForest = RandomForestClassifier().fit(classificaiton_X,classificaiton_y)
-gradientBoosting = GradientBoostingClassifier().fit(classificaiton_X,classificaiton_y)
-gaussianNB = GaussianNB().fit(classificaiton_X,classificaiton_y)
+logistic = LogisticRegression().fit(classificaiton_X,classificaiton_y) #완료
+kneighbors = KNeighborsClassifier().fit(classificaiton_X,classificaiton_y) #완료
+decisionTree = DecisionTreeClassifier().fit(classificaiton_X,classificaiton_y) #완료
+randomForest = RandomForestClassifier().fit(classificaiton_X,classificaiton_y) #완료
+gradientBoosting = GradientBoostingClassifier().fit(classificaiton_X,classificaiton_y) #완료
+gaussianNB = GaussianNB().fit(classificaiton_X,classificaiton_y) #완료
+
+#----------------------------------------------------------------------------
+#parameters for GridSearch
+decisionTree_params = {
+    'max_depth' : [None,6, 8, 10, 12, 16, 20, 24],
+    'min_samples_split' : [2,20,50,100,200],
+    'criterion':['entropy','gini']
+}
+logistic_params = {
+    'C' : [0.1,1.0,10.0],
+   'solver' : ['liblinear','lbfgs','sag'],
+    'max_iter' : [50,100,200]
+}
+randomForest_params = {
+    'n_estimators' : [],
+    'max_featrues' : []
+}
+KNN_params = {
+    'n_neighbors' :[3,5,11,19],
+    'weights' : ['uniform','distance'],
+    'metric':['euclidean','manhattan']
+}
+randomForest_params = { 
+    'n_estimators': [200, 500],
+    'max_features': ['auto', 'sqrt', 'log2'],
+    'max_depth' : [4,5,6,7,8],
+    'criterion' :['gini', 'entropy']
+}
+gradient_params = {
+    "n_estimators": range(50, 100, 25),
+    "max_depth": [1, 2, 4],
+    "learning_rate": [0.0001, 0.001, 0.01, 0.1],
+    "subsample": [0.7, 0.9],
+    "max_features": list(range(1, len(x_vars), 2))
+}
+
+# 0 부터 1 까지 0.01간격으로 parameter range 설정
+param_range = []
+NBarangeSet = np.arange(0,1,0.001)
+for i in range(len(NBarangeSet)):
+    param_range.append([NBarangeSet[i],1-NBarangeSet[i]])
+ 
+ 
+gaussian_params = dict(priors=param_range)
+
+
+#----------------------------------------------------------------------------
 
 # model = [logistic, kneighbors, decisionTree, randomForest, gradientBoosting, gaussianNB]
 # clf = GridSearchCV(svc, parameters)
 # best parameter 나오면 그걸로 test
+
+
+gaussian_grid = GridSearchCV(gaussianNB, param_grid = gaussian_params, cv = list(StratifiedKFold(n_splits=5).split(dfX_train, dfy_train)),n_jobs=2)
+
+#----------------------------------------------------------------------------
 
 # cluster
 outlier_index=[] #for save outlier index
