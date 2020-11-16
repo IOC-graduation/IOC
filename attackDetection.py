@@ -48,7 +48,10 @@ class Ui_Dialog(object):
         self.verticalScrollBar.setOrientation(QtCore.Qt.Vertical)
         self.verticalScrollBar.setObjectName("verticalScrollBar")
         self.comboBox = QtWidgets.QComboBox(self.frame)
+        geek_list = ["Geek", "Geeky Geek", "Legend Geek", "Ultra Legend Geek"]
+        self.comboBox.addItems(geek_list)
         self.comboBox.setGeometry(QtCore.QRect(10, 10, 441, 31))
+        self.comboBox.setObjectName("comboBox")
         self.comboBox.setObjectName("comboBox")
         self.graphicsView = QtWidgets.QGraphicsView(Dialog)
         self.graphicsView.setGeometry(QtCore.QRect(400, 470, 281, 261))
