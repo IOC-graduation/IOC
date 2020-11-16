@@ -14,19 +14,34 @@ import warnings
 warnings.filterwarnings(action='ignore')
 
 # Load the data
+# clustering data
 df = pd.read_csv('C:/Users/samsung/Desktop/머신러닝/ML-week-10/mushrooms.csv') #데이터 변경(GUI로 파일 입력받기)
+# classificaiton data
+
 
 # LabelEncoder
+# classification, clustering 모두 encoding 필요
+# 현재 clustering만 encoding
 encoder = LabelEncoder()
 for cols in df.columns:
     df[cols] = encoder.fit_transform(df[cols])
 print(df)
+# classification encoding
 
 # Drop the class column from the data
-X = df.drop('class', axis=1) # 데이터 변경(공격(yes or no)이 target)
+# 데이터 변경(공격(yes or no)이 target)
+# clustering
+clustering_X = df.drop('class', axis=1)
+clustering_y = df['class'].values #target
+# classification
+# clustering_x column = classification_x column
+classificaiton_X = df.drop('class', axis=1)
+classificaiton_y = df['class'].values #target
 
 # Preprocess the data
 # null값 처리 필요
+# 우선 단순히 mean값으로 채우기(고민)
+clustering_X = clustering_X.fillna(df.mean())
 
 # Scale the data
 # Scaling - MinMaxScaler, Normalizer, StandardScaler
@@ -34,6 +49,27 @@ MinMax_scaler = MinMaxScaler()
 Standard_scaler = StandardScaler()
 
 # classification
+# library
+from sklearn.model_selection import GridSearchCV
+from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.naive_bayes import GaussianNB
+
+# model
+# modle별 파라미터 정의 필요
+logistic = LogisticRegression().fit(classificaiton_X,classificaiton_y)
+kneighbors = KNeighborsClassifier().fit(classificaiton_X,classificaiton_y)
+decisionTree = DecisionTreeClassifier().fit(classificaiton_X,classificaiton_y)
+randomForest = RandomForestClassifier().fit(classificaiton_X,classificaiton_y)
+gradientBoosting = GradientBoostingClassifier().fit(classificaiton_X,classificaiton_y)
+gaussianNB = GaussianNB().fit(classificaiton_X,classificaiton_y)
+
+# model = [logistic, kneighbors, decisionTree, randomForest, gradientBoosting, gaussianNB]
+# clf = GridSearchCV(svc, parameters)
+# best parameter 나오면 그걸로 test
 
 # cluster
 outlier_index=[] #for save outlier index
@@ -45,7 +81,7 @@ data_outlier=DataFrame(outlier)
 # scaler에 따라 데이터가 많이 변경되기에 가장 좋은 모델을 찾기 위해 scaling을 minmax, standard로 모두 진행하고 비교할 것
 for scaler in[MinMax_scaler,Standard_scaler] :
     print(scaler)
-    X_scaled = scaler.fit_transform(X)
+    X_scaled = scaler.fit_transform(clustering_X)
     # Normalize the data
     X_normalized = normalize(X_scaled)
     X_normalized = pd.DataFrame(X_normalized)
@@ -90,6 +126,8 @@ for scaler in[MinMax_scaler,Standard_scaler] :
                                 for i in outlier_index:
                                     data_outlier = data_outlier.append(df.loc[i])
                                 print(data_outlier)
+                                # best classification model
+
 
         else :
             print('-----------------------')
@@ -117,4 +155,6 @@ for scaler in[MinMax_scaler,Standard_scaler] :
                         for i in outlier_index:
                             data_outlier = data_outlier.append(df.loc[i])
                         print(data_outlier)
+                        # best classification model
+
             print('-----------------------')
