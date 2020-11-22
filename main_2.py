@@ -15,6 +15,7 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier, VotingClassifier
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import accuracy_score
 
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import StandardScaler
@@ -95,8 +96,10 @@ X_test_scaled = MinMax_scaler.fit_transform(X_test)
 # model
 # modle별 파라미터 정의 필요
 logistic = LogisticRegression()  # 완료
-
+l_model = logistic.fit(X_scaled, y_train)
+print(l_model.predict(X_test_scaled))
 kneighbors = KNeighborsClassifier()  # 완료
+
 decisionTree = DecisionTreeClassifier()  # 완료
 randomForest = RandomForestClassifier() # 완료
 gradientBoosting = GradientBoostingClassifier()  # 완료
@@ -156,8 +159,8 @@ gaussian_params = dict(priors=param_range)
 # GridSearch
 cv = KFold(n_splits=10, random_state=1)
 # Logistic Regression
-gcv_logistic = GridSearchCV(logistic, param_grid=logistic_params, cv=cv, scoring='f1_micro', n_jobs=4)
-gcv_logistic.fit(X_train, y_train)
+gcv_logistic = GridSearchCV(logistic, param_grid=logistic_params, scoring='accuracy', cv=cv, verbose=1)
+gcv_logistic.fit(X_scaled, y_train)
 print("---------------------------------------------------------------")
 print("Logistic Regression")
 print('final params', gcv_logistic.best_params_)   # 최적의 파라미터 값 출력
@@ -165,7 +168,7 @@ print('best score', gcv_logistic.best_score_) # 최고의 점수
 logistic_best = gcv_logistic.best_estimator_
 
 # KNN
-gcv_kneighbors = GridSearchCV(kneighbors, param_grid=KNN_params, cv=cv, scoring='f1_micro', n_jobs=4)
+gcv_kneighbors = GridSearchCV(kneighbors, param_grid=KNN_params,scoring='accuracy', cv=cv, verbose=1)
 gcv_kneighbors.fit(X_scaled,y_train)
 print("---------------------------------------------------------------")
 print("KNN")
@@ -174,7 +177,7 @@ print('best score', gcv_kneighbors.best_score_)      # 최고의 점수
 knn_best = gcv_kneighbors.best_estimator_
 
 # Decision Tree
-gcv_decisionTree = GridSearchCV(decisionTree, param_grid=decisionTree_params, cv=cv, scoring='f1_micro', n_jobs=4)
+gcv_decisionTree = GridSearchCV(decisionTree, param_grid=decisionTree_params, scoring='accuracy', cv=cv, verbose=1)
 gcv_decisionTree.fit(X_scaled,y_train)
 print("---------------------------------------------------------------")
 print("Decision Tree")
@@ -183,7 +186,7 @@ print('best score', gcv_decisionTree.best_score_)      # 최고의 점수
 decisionTree_best = gcv_decisionTree.best_estimator_
 
 # Random Forest
-gcv_randomForest = GridSearchCV(randomForest, param_grid=randomForest_params, cv=cv, scoring='f1_micro', n_jobs=4)
+gcv_randomForest = GridSearchCV(randomForest, param_grid=randomForest_params, scoring='accuracy', cv=cv, verbose=1)
 gcv_randomForest.fit(X_scaled,y_train)
 print("---------------------------------------------------------------")
 print("Random Forest")
@@ -192,7 +195,7 @@ print('best score', gcv_randomForest.best_score_)      # 최고의 점수
 randomForest_best = gcv_randomForest.best_estimator_
 
 # Gradient Boosting
-gcv_gradientBoosting = GridSearchCV(gradientBoosting, param_grid=gradient_params, cv=cv, scoring='f1_micro', n_jobs=4)
+gcv_gradientBoosting = GridSearchCV(gradientBoosting, param_grid=gradient_params, scoring='accuracy', cv=cv, verbose=1)
 gcv_gradientBoosting.fit(X_scaled,y_train)
 print("---------------------------------------------------------------")
 print("Gradient Boosting")
@@ -201,7 +204,7 @@ print('best score', gcv_gradientBoosting.best_score_)      # 최고의 점수
 gradientBoosting_best = gcv_gradientBoosting.best_estimator_
 
 # GaussianNB
-gcv_gaussianNB = GridSearchCV(gaussianNB, param_grid=gaussian_params, cv=cv, scoring='f1_micro', n_jobs=4)
+gcv_gaussianNB = GridSearchCV(gaussianNB, param_grid=gaussian_params, scoring='accuracy', cv=cv, verbose=1)
 gcv_gaussianNB.fit(X_scaled,y_train)
 print("---------------------------------------------------------------")
 print("GaussianNB")
