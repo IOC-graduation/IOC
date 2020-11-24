@@ -22,7 +22,9 @@ Standard_scaler = StandardScaler()
 # misuse detection
 misuse_file = 'Dataset_Misuse_AttributeSelection.csv'
 misuse_df = pd.read_csv(misuse_file)
-print(misuse_df)
+##print(misuse_df)
+
+#fill nan
 misuse_df = misuse_df.fillna('Normal')
 
 encoder = LabelEncoder()
@@ -34,7 +36,7 @@ misuse_y = misuse_df['AttackType'].values
 # anomaly detection
 anomaly_file = 'Dataset_Anomaly_AttributeSelection.csv'
 anomaly_df = pd.read_csv(anomaly_file)
-print(anomaly_df)
+##print(anomaly_df)
 
 #anomaly_df['AttackType'] = encoder.fit_transform(anomaly_df['AttackType'])
 
@@ -51,8 +53,9 @@ test_df['service'] = encoder.fit_transform(test_df['service'])
 test_df['flag'] = encoder.fit_transform(test_df['flag'])
 
 # Scale the data
-print("Test data")
+##print("Test data")
 test_X = MinMax_scaler.fit_transform(test_df)
+
 
 # -------------------------------------------------------------------------------------------------------------
 logistic_params = {
@@ -86,13 +89,15 @@ print("Misuse detection")
 X_scaled = MinMax_scaler.fit_transform(misuse_x)
 
 #null값 확인
-print('----- Missing data -----')
-print(misuse_df.isnull().sum())
-print('Total : ',misuse_df.isnull().sum().sum())
-print()
-print(anomaly_df.isnull().sum())
-print('Total : ',anomaly_df.isnull().sum().sum())
-print()
+##print('----- Missing data -----')
+##print(misuse_df.isnull().sum())
+##print('Total : ',misuse_df.isnull().sum().sum())
+##print()
+##print(anomaly_df.isnull().sum())
+##print('Total : ',anomaly_df.isnull().sum().sum())
+##print()
+
+# -------------------------------------------------------------------------------------------------------------
 
 # misuse dectection model train
 logistic = LogisticRegression().fit(X_scaled, misuse_y)
@@ -110,8 +115,9 @@ print("Logistic Regression")
 print('final params', gcv_logistic.best_params_)   # 최적의 파라미터 값 출력
 print('best score', gcv_logistic.best_score_) # 최고의 점수
 logistic_best = gcv_logistic.best_estimator_
-logistic_predict = logistic_best.predict(test_X)
-print(logistic_predict)
+gcv_logistic_score = gcv_logistic.best_score_
+##logistic_predict = logistic_best.predict(test_X)
+##print(logistic_predict)
 
 # Decision Tree
 gcv_decisionTree = GridSearchCV(decisionTree, param_grid=decisionTree_params, scoring='accuracy', cv=cv, verbose=1)
@@ -120,9 +126,10 @@ print("---------------------------------------------------------------")
 print("Decision Tree")
 print('final params', gcv_decisionTree.best_params_)   # 최적의 파라미터 값 출력
 print('best score', gcv_decisionTree.best_score_)      # 최고의 점수
+gcv_decisionTree_score = gcv_decisionTree.best_score_
 decisionTree_best = gcv_decisionTree.best_estimator_
-decisionTree_predict = decisionTree_best.predict(test_X)
-print(decisionTree_predict)
+##decisionTree_predict = decisionTree_best.predict(test_X)
+##print(decisionTree_predict)
 
 # Random Forest
 gcv_randomForest = GridSearchCV(randomForest, param_grid=randomForest_params, scoring='accuracy', cv=cv, verbose=1)
@@ -131,11 +138,12 @@ print("---------------------------------------------------------------")
 print("Random Forest")
 print('final params', gcv_randomForest.best_params_)   # 최적의 파라미터 값 출력
 print('best score', gcv_randomForest.best_score_)      # 최고의 점수
+gcv_randomForest_score = gcv_randomForest.best_score_
 randomForest_best = gcv_randomForest.best_estimator_
-randomForest_predict = randomForest_best.predict(test_X)
-print(randomForest_predict)
+##randomForest_predict = randomForest_best.predict(test_X)
+##print(randomForest_predict)
 
-
+##
 # Gradient Boosting
 gcv_gradientBoosting = GridSearchCV(gradientBoosting, param_grid=gradient_params, scoring='accuracy', cv=cv, verbose=1)
 gcv_gradientBoosting.fit(X_scaled,misuse_y)
@@ -144,10 +152,34 @@ print("Gradient Boosting")
 print('final params', gcv_gradientBoosting.best_params_)   # 최적의 파라미터 값 출력
 print('best score', gcv_gradientBoosting.best_score_)      # 최고의 점수
 gradientBoosting_best = gcv_gradientBoosting.best_estimator_
+gcv_gradientBoosting_score = gcv_gradientBoosting.best_score_
 gradientBoosting_predict = gradientBoosting_best.predict(test_X)
 print(gradientBoosting_predict)
 
-# --------------------------------------
+score = [gcv_decisionTree_score, gcv_randomForest_score]
+models = [decisionTree_best,randomForest_best]
+max_score = gcv_logistic_score
+best_model = logistic_best
+for i in range(len(score)):
+    if max_score < score[i]:
+        max_score = score[i]
+        best_model = models[i]
+
+print(max_score)
+        
+# best model을 통해 predict한 결과가 normal인 것만 모아 새로운 dataframe 생성
+normal_X = pd.DataFrame(columns = test_df.columns)
+
+index = 0
+result = list(best_model.predict(test_X))
+for i in range(len(result)) :
+    if result[i] == 'Normal' :
+        normal_X.loc[index] = test_X[i]
+        index = index + 1
+
+print(normal_X)
+
+# -------------------------------------------------------------------------
 print("Anomaly detection")
 value = anomaly_x.columns
 
@@ -169,8 +201,9 @@ print("Logistic Regression")
 print('final params', gcv_logistic.best_params_)   # 최적의 파라미터 값 출력
 print('best score', gcv_logistic.best_score_) # 최고의 점수
 logistic_best = gcv_logistic.best_estimator_
-logistic_predict = logistic_best.predict(test_X)
-print(logistic_predict)
+gcv_logistic_score = gcv_logistic.best_score_
+##logistic_predict = logistic_best.predict(normal_X)
+##print(logistic_predict)
 
 # Decision Tree
 gcv_decisionTree = GridSearchCV(decisionTree, param_grid=decisionTree_params, scoring='accuracy', cv=cv, verbose=1)
@@ -180,8 +213,9 @@ print("Decision Tree")
 print('final params', gcv_decisionTree.best_params_)   # 최적의 파라미터 값 출력
 print('best score', gcv_decisionTree.best_score_)      # 최고의 점수
 decisionTree_best = gcv_decisionTree.best_estimator_
-decisionTree_predict = decisionTree_best.predict(test_X)
-print(decisionTree_predict)
+gcv_decisionTree_score = gcv_decisionTree.best_score_
+##decisionTree_predict = decisionTree_best.predict(normal_X)
+##print(decisionTree_predict)
 
 # Random Forest
 gcv_randomForest = GridSearchCV(randomForest, param_grid=randomForest_params, scoring='accuracy', cv=cv, verbose=1)
@@ -191,8 +225,9 @@ print("Random Forest")
 print('final params', gcv_randomForest.best_params_)   # 최적의 파라미터 값 출력
 print('best score', gcv_randomForest.best_score_)      # 최고의 점수
 randomForest_best = gcv_randomForest.best_estimator_
-randomForest_predict = randomForest_best.predict(test_X)
-print(randomForest_predict)
+gcv_randomForest_score = gcv_randomForest.best_score_
+##randomForest_predict = randomForest_best.predict(normal_X)
+##print(randomForest_predict)
 
 # Gradient Boosting
 gcv_gradientBoosting = GridSearchCV(gradientBoosting, param_grid=gradient_params, scoring='accuracy', cv=cv, verbose=1)
@@ -202,5 +237,18 @@ print("Gradient Boosting")
 print('final params', gcv_gradientBoosting.best_params_)   # 최적의 파라미터 값 출력
 print('best score', gcv_gradientBoosting.best_score_)      # 최고의 점수
 gradientBoosting_best = gcv_gradientBoosting.best_estimator_
-gradientBoosting_predict = gradientBoosting_best.predict(test_X)
+gcv_gradientBoosting_score = gcv_gradientBoosting.best_score_
+gradientBoosting_predict = gradientBoosting_best.predict(normal_X)
 print(gradientBoosting_predict)
+
+#best model / score 
+score = [gcv_decisionTree_score, gcv_randomForest_score]
+models = [decisionTree_best,randomForest_best]
+max_score = gcv_logistic_score
+best_model = logistic_best
+for i in range(len(score)):
+    if max_score < score[i]:
+        max_score = score[i]
+        best_model = models[i]
+
+print(max_score)
