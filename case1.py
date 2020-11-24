@@ -158,8 +158,6 @@ logistic = LogisticRegression().fit(X_scaled, misuse_y)
 decisionTree = DecisionTreeClassifier().fit(X_scaled, misuse_y)
 randomForest = RandomForestClassifier().fit(X_scaled, misuse_y)
 gradientBoosting = GradientBoostingClassifier().fit(X_scaled, misuse_y)
-logistic_predict = logistic_best.predict(test_X)
-print(logistic_predict)
 
 # GridSearch
 cv = KFold(n_splits=10, random_state=1)
@@ -171,6 +169,8 @@ print("Logistic Regression")
 print('final params', gcv_logistic.best_params_)   # 최적의 파라미터 값 출력
 print('best score', gcv_logistic.best_score_) # 최고의 점수
 logistic_best = gcv_logistic.best_estimator_
+logistic_predict = logistic_best.predict(test_X)
+print(logistic_predict)
 
 # Decision Tree
 gcv_decisionTree = GridSearchCV(decisionTree, param_grid=decisionTree_params, scoring='accuracy', cv=cv, verbose=1)
