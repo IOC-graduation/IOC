@@ -25,6 +25,8 @@ from sklearn.mixture import GaussianMixture
 # misuse detection
 misuse_file = 'C:/Users/samsung/Desktop/Machine-Learning-Project-master/Dataset_Misuse_AttributeSelection.csv'
 misuse_df = pd.read_csv(misuse_file)
+# fill nan -- NaN is normal case
+misuse_df = misuse_df.fillna('Normal')
 print(misuse_df)
 
 encoder = LabelEncoder()
@@ -59,6 +61,12 @@ gradient_params = {
     "subsample": [0.7, 0.9],
     "max_features": list(range(1, len(misuse_x.columns), 2))
 }
+
+#null값 확인
+##print('----- Missing data -----')
+##print(misuse_df.isnull().sum())
+##print('Total : ',misuse_df.isnull().sum().sum())
+##print()
 
 # Scale the data
 # Scaling - MinMaxScaler, Normalizer, StandardScaler
