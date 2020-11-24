@@ -33,16 +33,6 @@ misuse_df['AttackType'] = encoder.fit_transform(misuse_df['AttackType'])
 misuse_x = misuse_df.drop('AttackType', axis=1)
 misuse_y = misuse_df['AttackType'].values
 
-# anomaly detection
-anomaly_file = 'C:/Users/samsung/Desktop/Machine-Learning-Project-master/Dataset_Anomaly_AttributeSelection.csv'
-anomaly_df = pd.read_csv(anomaly_file)
-print(anomaly_df)
-
-anomaly_df['AttackType'] = encoder.fit_transform(anomaly_df['AttackType'])
-
-anomaly_x = anomaly_df.drop('AttackType', axis=1)
-anomaly_y = anomaly_df['AttackType'].values
-
 # -------------------------------------------------------------------------------------------------------------
 logistic_params = {
     'C': [0.1, 1.0, 10.0],
