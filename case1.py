@@ -135,17 +135,17 @@ randomForest_best = gcv_randomForest.best_estimator_
 randomForest_predict = randomForest_best.predict(test_X)
 print(randomForest_predict)
 
-##
-### Gradient Boosting
-##gcv_gradientBoosting = GridSearchCV(gradientBoosting, param_grid=gradient_params, scoring='accuracy', cv=cv, verbose=1)
-##gcv_gradientBoosting.fit(X_scaled,misuse_y)
-##print("---------------------------------------------------------------")
-##print("Gradient Boosting")
-##print('final params', gcv_gradientBoosting.best_params_)   # 최적의 파라미터 값 출력
-##print('best score', gcv_gradientBoosting.best_score_)      # 최고의 점수
-##gradientBoosting_best = gcv_gradientBoosting.best_estimator_
-##gradientBoosting_predict = gradientBoosting_best.predict(test_X)
-##print(gradientBoosting_predict)
+
+# Gradient Boosting
+gcv_gradientBoosting = GridSearchCV(gradientBoosting, param_grid=gradient_params, scoring='accuracy', cv=cv, verbose=1)
+gcv_gradientBoosting.fit(X_scaled,misuse_y)
+print("---------------------------------------------------------------")
+print("Gradient Boosting")
+print('final params', gcv_gradientBoosting.best_params_)   # 최적의 파라미터 값 출력
+print('best score', gcv_gradientBoosting.best_score_)      # 최고의 점수
+gradientBoosting_best = gcv_gradientBoosting.best_estimator_
+gradientBoosting_predict = gradientBoosting_best.predict(test_X)
+print(gradientBoosting_predict)
 
 # --------------------------------------
 print("Anomaly detection")
@@ -194,14 +194,13 @@ randomForest_best = gcv_randomForest.best_estimator_
 randomForest_predict = randomForest_best.predict(test_X)
 print(randomForest_predict)
 
-##
-### Gradient Boosting
-##gcv_gradientBoosting = GridSearchCV(gradientBoosting, param_grid=gradient_params, scoring='accuracy', cv=cv, verbose=1)
-##gcv_gradientBoosting.fit(X_scaled,anomaly_y)
-##print("---------------------------------------------------------------")
-##print("Gradient Boosting")
-##print('final params', gcv_gradientBoosting.best_params_)   # 최적의 파라미터 값 출력
-##print('best score', gcv_gradientBoosting.best_score_)      # 최고의 점수
-##gradientBoosting_best = gcv_gradientBoosting.best_estimator_
-##gradientBoosting_predict = gradientBoosting_best.predict(test_X)
-##print(gradientBoosting_predict)
+# Gradient Boosting
+gcv_gradientBoosting = GridSearchCV(gradientBoosting, param_grid=gradient_params, scoring='accuracy', cv=cv, verbose=1)
+gcv_gradientBoosting.fit(X_scaled,anomaly_y)
+print("---------------------------------------------------------------")
+print("Gradient Boosting")
+print('final params', gcv_gradientBoosting.best_params_)   # 최적의 파라미터 값 출력
+print('best score', gcv_gradientBoosting.best_score_)      # 최고의 점수
+gradientBoosting_best = gcv_gradientBoosting.best_estimator_
+gradientBoosting_predict = gradientBoosting_best.predict(test_X)
+print(gradientBoosting_predict)
