@@ -1,4 +1,4 @@
-# Attack_Detection
+# Hybrid Detection
 ### Graduation project (Department of Software at Gachon University) 
 ------------------------
 ### Attack detection through Misuse detection and Anomaly detection.
